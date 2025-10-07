@@ -19,9 +19,17 @@
 
         <label for="read">Read?</label>
         <input type="checkbox" id="read" name="read">
-        <button class="btn" type="submit">Submit</button>   
+
+        <button class="btn" type="submit" data-action="submit">Submit</button>   
+        <button class="btn" type="submit" data-action="remove">Remove</button>
     </fieldset>
-    
+    <table class = "tbl">
+        <th>R</th>
+        <th>Book Title</th>
+        <th>Author</th>
+        <th>Pages</th>
+        <th>Read?</th>
+    </table>
     <script src="javascript.js"></script>
 </body>
 </html>

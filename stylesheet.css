@@ -2,3 +2,10 @@ body {
     color: white;
     background-color: black;
 }
+
+
+table, th, tr, td {
+    border: 1px solid white;
+    width: 500px;
+    text-align: center;
+}
