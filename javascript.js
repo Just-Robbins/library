@@ -20,7 +20,7 @@ function Book(id, title, author, pages, read) {
 
 function addBookToLibrary(bookToAdd) {
     myLibrary.push(bookToAdd); 
-    updateTable();
+    renderLibrary();
 }
 
 buttons.forEach(button => {
@@ -37,55 +37,49 @@ buttons.forEach(button => {
     });
 });
 
-function updateTable () {
-    const book = myLibrary[myLibrary.length -1];
-    const newRow = document.createElement("tr");
-    
+function renderLibrary () {
+    bookDisplay.innerHTML = '';
+    myLibrary.forEach(book => {
+        const newRow = document.createElement("tr");
+        
 
-    const columns = [
-        {type: 'checkbox', value: ''},
-        {type: 'text', value: book.title},
-        {type: 'text', value: book.author},
-        {type: 'text', value: book.pages},
-        {type: 'text', value: book.read}
-    ];
+        const columns = [
+            {type: 'checkbox', value: ''},
+            {type: 'text', value: book.title},
+            {type: 'text', value: book.author},
+            {type: 'text', value: book.pages},
+            {type: 'text', value: book.read}
+        ];
 
-    columns.forEach(column => {
-        const cell = document.createElement('td');
+        columns.forEach(column => {
+            const cell = document.createElement('td');
 
-        if (column.type === 'checkbox') {
-            const checkbox = document.createElement("input");
-            checkbox.type = 'checkbox';
-            checkbox.setAttribute("data-value", book.id);
-            checkbox.classList.add('remove-checkbox');
-            cell.appendChild(checkbox);
-        } else {
-            cell.textContent = column.value
-        }
+            if (column.type === 'checkbox') {
+                const checkbox = document.createElement("input");
+                checkbox.type = 'checkbox';
+                checkbox.setAttribute("data-value", book.id);
+                checkbox.classList.add('remove-checkbox');
+                cell.appendChild(checkbox);
+            } else {
+                cell.textContent = column.value
+            }
 
-        newRow.appendChild(cell);
+            newRow.appendChild(cell);
+        });
+        bookDisplay.appendChild(newRow);
     });
-    bookDisplay.appendChild(newRow);
 }
 
 function removeFromTable() {
-    const currentCheckboxes = document.querySelectorAll('.remove-checkbox');
+    const currentCheckboxes = document.querySelectorAll('.remove-checkbox:checked');
     
     currentCheckboxes.forEach(checkbox => {
-        if (checkbox.checked) {
-            const bookId = checkbox.dataset.value;
-            
-            const bookIndex = myLibrary.findIndex(book => book.id === bookId);
-            if (bookIndex !== -1) {
-                myLibrary.splice(bookIndex, 1);
-            }
-
-            const row = checkbox.closest('tr');
-            if (row) {
-                row.remove();
-            }
-            
-            console.log(`Removed book with ID: ${bookId}`);
+        const bookId = checkbox.dataset.value;
+        const bookIndex = myLibrary.findIndex(book => book.id === bookId);
+        if (bookIndex !== -1) {
+            myLibrary.splice(bookIndex, 1);
         }
     });
+    
+    renderLibrary();
 }
