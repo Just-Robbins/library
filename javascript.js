@@ -29,7 +29,7 @@ buttons.forEach(button => {
 
         if (action === "submit") {
             const id = crypto.randomUUID();
-            const newBook = new Book(id, title.value, author.value, pages.value, read.value);
+            const newBook = new Book(id, title.value, author.value, pages.value, read.checked);
             addBookToLibrary(newBook);
         } else if (action === "remove") {
             removeFromTable();
@@ -38,35 +38,58 @@ buttons.forEach(button => {
 });
 
 function renderLibrary () {
-    bookDisplay.innerHTML = '';
+    let tableBody = document.querySelector("tbody");
+
+    if (!tableBody) {
+        const tbody = document.createElement("tbody")
+        bookDisplay.appendChild(tbody);
+        tableBody = tbody;
+    } else {
+        tableBody.innerHTML = '';
+    }
+    
     myLibrary.forEach(book => {
         const newRow = document.createElement("tr");
         
 
         const columns = [
-            {type: 'checkbox', value: ''},
+            {type: 'remove-checkbox', value: ''},
             {type: 'text', value: book.title},
             {type: 'text', value: book.author},
             {type: 'text', value: book.pages},
-            {type: 'text', value: book.read}
+            {type: 'read-button', value: book.read, id: book.id}
         ];
 
         columns.forEach(column => {
             const cell = document.createElement('td');
 
-            if (column.type === 'checkbox') {
+            if (column.type.includes('checkbox')) {
                 const checkbox = document.createElement("input");
                 checkbox.type = 'checkbox';
                 checkbox.setAttribute("data-value", book.id);
                 checkbox.classList.add('remove-checkbox');
                 cell.appendChild(checkbox);
+            } else if (column.type === 'read-button'){
+                const readBtn = document.createElement("button");
+                readBtn.setAttribute("data-value", column.id);
+                readBtn.classList.add('read-status-btn');
+                readBtn.innerText = column.value;
+                readBtn.addEventListener('click', function() {
+                    const bookToUpdate = myLibrary.find(b => b.id === column.id);
+                    if (bookToUpdate) {
+                        bookToUpdate.changeReadStatus();
+                        renderLibrary();
+                    }
+                });
+
+                cell.appendChild(readBtn);
             } else {
                 cell.textContent = column.value
             }
 
             newRow.appendChild(cell);
         });
-        bookDisplay.appendChild(newRow);
+        tableBody.appendChild(newRow);
     });
 }
 
@@ -80,6 +103,11 @@ function removeFromTable() {
             myLibrary.splice(bookIndex, 1);
         }
     });
-    
+
     renderLibrary();
+}
+
+Book.prototype.changeReadStatus = function () {
+    this.read = !this.read;
+    return this.read;
 }
