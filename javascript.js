@@ -7,15 +7,22 @@ const author = document.querySelector("#book_author");
 const pages = document.querySelector("#page_number");
 const read = document.querySelector("#read");
 
-function Book(id, title, author, pages, read) {
-    if (!new.target) {
-        throw Error("Not NEW");
+class Book {
+    constructor(id, title, author, pages, read) {
+        if (!new.target) {
+            throw Error("Not NEW");
+        }
+        this.id = id;
+        this.title = title;
+        this.author = author;
+        this.pages = pages;
+        this.read = read;
     }
-    this.id = id;
-    this.title = title;
-    this.author = author;
-    this.pages = pages;
-    this.read = read;
+
+    ChangeReadStatus() {
+		this.read = !this.read;
+		return this.read;
+	}
 }
 
 function addBookToLibrary(bookToAdd) {
@@ -105,9 +112,4 @@ function removeFromTable() {
     });
 
     renderLibrary();
-}
-
-Book.prototype.changeReadStatus = function () {
-    this.read = !this.read;
-    return this.read;
 }
